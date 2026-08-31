@@ -6,7 +6,8 @@ type Props = {
     data: Weather
 }
 
-export default function CurrentWeather({ data }: Props) {
+export default function CurrentWeather({ data }: Props) {    
+
     return (
         <Card
             title="Météo actuelle"

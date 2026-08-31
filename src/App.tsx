@@ -5,20 +5,20 @@ import DailyForecast from "./components/cards/DailyForecast"
 import HourlyForecast from "./components/cards/HourlyForecast"
 import CurrentWeather from "./components/cards/CurrentWeather"
 import AdditionalInfo from "./components/cards/AdditionalInfo"
+import Map from "./components/Map"
+import { useState } from "react"
+import type { Coords } from "./types"
 
 
 // Utilisation de weatherMock ou apiData
 const USE_MOCK = true
 
 function App() {
-
-  /* Données API */
-  const lat = 48.8566
-  const lon = 2.3522
+  const [coords, setCoords] = useState<Coords>({lat: 48.8566, lon: 2.3522})  
 
   const { data: apiData } = useQuery({
-    queryKey: ['weather', lat, lon],
-    queryFn: () => getWeather({ lat, lon }),
+    queryKey: ['weather', coords.lat, coords.lon],
+    queryFn: () => getWeather(coords),
     enabled: !USE_MOCK
   })
 
@@ -28,9 +28,14 @@ function App() {
     return <p>Chargement...</p>
   }
 
+  // console.log(coords);
+  
+
   return (
     <>
       <div className="flex flex-col gap-8">
+        <Map coords={coords} onLocationChange={setCoords} />
+
         <CurrentWeather data={data} />
 
         <HourlyForecast data={data} />
