@@ -1,8 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import { getWeather } from "./api"
-import Card from "./components/cards/Card"
 import { weatherMock } from "./mocks/weatherMock"
 import DailyForecast from "./components/cards/DailyForecast"
+import HourlyForecast from "./components/cards/HourlyForecast"
+import CurrentWeather from "./components/cards/CurrentWeather"
+import AdditionalInfo from "./components/cards/AdditionalInfo"
+
 
 // Utilisation de weatherMock ou apiData
 const USE_MOCK = true
@@ -21,20 +24,20 @@ function App() {
 
   const data = USE_MOCK ? weatherMock : apiData
 
-  if(!data) {
+  if (!data) {
     return <p>Chargement...</p>
   }
 
   return (
     <>
       <div className="flex flex-col gap-8">
-        <Card title="Météo actuelle">
-          {JSON.stringify(data?.current ?? "Chargement...").slice(0, 100)}
-        </Card>
-        <Card title="Prévisions horaires (48h)">
-          {JSON.stringify(data?.hourly ?? "Chargement...").slice(0, 100)}
-        </Card>
+        <CurrentWeather data={data} />
+
+        <HourlyForecast data={data} />
+
         <DailyForecast data={data} />
+
+        <AdditionalInfo data={data} />
       </div>
     </>
   )

@@ -19,7 +19,7 @@ export const weatherMock: Weather = {
         clouds: 20,
         visibility: 10000,
         wind_speed: 3.5,
-        wind_deg: 180,
+        wind_deg: 184,
         wind_gust: 5.5,
 
         weather: [
