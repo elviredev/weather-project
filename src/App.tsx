@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { getWeather } from "./api"
+import { getGeocode, getWeather } from "./api"
 import { weatherMock } from "./mocks/weatherMock"
 import DailyForecast from "./components/cards/DailyForecast"
 import HourlyForecast from "./components/cards/HourlyForecast"
@@ -8,41 +8,92 @@ import AdditionalInfo from "./components/cards/AdditionalInfo"
 import Map from "./components/Map"
 import { useState } from "react"
 import type { Coords } from "./types"
+import LocationDropdown from "./components/dropdowns/LocationDropdown"
+import { geocodeMock } from "./mocks/geocodeMock"
+import { USE_MOCK } from "./config"
 
+// "city" pour le geocodage - "custom" pour le click sur la map
+type LocationMode = "city" | "custom"
 
-// Utilisation de weatherMock ou apiData
-const USE_MOCK = true
 
 function App() {
-  const [coords, setCoords] = useState<Coords>({lat: 48.8566, lon: 2.3522})  
+  const [coords, setCoords] = useState<Coords>({ lat: 48.8566, lon: 2.3522 })
+  const [location, setLocation] = useState('Tokyo')
+  const [locationMode, setLocationMode] = useState<LocationMode>("city")
 
-  const { data: apiData } = useQuery({
-    queryKey: ['weather', coords.lat, coords.lon],
-    queryFn: () => getWeather(coords),
+  // GEOCODAGE
+  const { data: apiGeocodeData } = useQuery({
+    queryKey: ['geocode', location],
+    queryFn: () => getGeocode(location),
     enabled: !USE_MOCK
   })
 
-  const data = USE_MOCK ? weatherMock : apiData
+  const geocodeData = USE_MOCK 
+    ? geocodeMock.filter(city => city.name === location)
+    : apiGeocodeData
 
-  if (!data) {
+  // COORDONNEES UTILISEES
+  const weatherCoords = locationMode === "custom"
+        ? coords
+        : geocodeData?.[0]
+          ? {
+            lat: geocodeData[0].lat,
+            lon: geocodeData[0].lon
+          }
+          : null
+
+  // METEO
+  const { data: apiWeatherData } = useQuery({
+    queryKey: ['weather', weatherCoords?.lat, weatherCoords?.lon],
+    queryFn: () => getWeather(weatherCoords!),
+    enabled: !USE_MOCK && weatherCoords !== null
+  })  
+
+  const weatherData = USE_MOCK ? weatherMock : apiWeatherData
+
+  // HANDLERS
+  const handleCityChange = (city: string) => {
+    setLocation(city)
+    setLocationMode("city")
+  }
+
+  const handleMapLocationChange = (newCoords: Coords) => {
+    setCoords(newCoords)
+    setLocationMode("custom")
+  }
+  
+
+  if (!weatherData) {
     return <p>Chargement...</p>
   }
 
   // console.log(coords);
-  
+
 
   return (
     <>
       <div className="flex flex-col gap-8">
-        <Map coords={coords} onLocationChange={setCoords} />
+        <div className="relative z-10">
+          <LocationDropdown
+            location={location}
+            onLocationChange={handleCityChange}
+          />
+        </div>
 
-        <CurrentWeather data={data} />
+        <div className="relative z-0">
+          <Map 
+          coords={weatherCoords ?? coords} 
+          onLocationChange={handleMapLocationChange} 
+          />
+        </div>
 
-        <HourlyForecast data={data} />
+        <CurrentWeather data={weatherData} />
 
-        <DailyForecast data={data} />
+        <HourlyForecast data={weatherData} />
 
-        <AdditionalInfo data={data} />
+        <DailyForecast data={weatherData} />
+
+        <AdditionalInfo data={weatherData} />
       </div>
     </>
   )
