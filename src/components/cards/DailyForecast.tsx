@@ -1,12 +1,20 @@
 import Card from './Card'
 import { type Weather } from '../../schemas/weatherSchemas'
 import WeatherIcon from '../WeatherIcon'
+import DailySkeleton from '../skeletons/DailySkeleton'
 
 type Props = {
-    data: Weather
+    data: Weather | undefined
+    isLoading: boolean
 }
 
-export default function DailyForecast({ data }: Props) {
+export default function DailyForecast({ data, isLoading }: Props) {
+
+    if (isLoading || !data) {
+        return (
+            <DailySkeleton />
+        )
+    }
 
     return (
         <Card title="Prévisions journalière" childrenClassName='flex flex-col gap-4'>

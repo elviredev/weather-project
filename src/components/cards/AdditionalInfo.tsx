@@ -7,12 +7,21 @@ import Uv from '../../assets/uv.svg?react'
 import Wind from '../../assets/wind.svg?react'
 import Pressure from '../../assets/pressure.svg?react'
 import UpArrow from '../../assets/uparrow.svg?react'
+import AdditionalInfoSkeleton from '../skeletons/AdditionalInfoSkeleton'
 
 type Props = {
-    data: Weather
+    data: Weather | undefined
+    isLoading: boolean
 }
 
-export default function AdditionalInfo({ data }: Props) {
+export default function AdditionalInfo({ data, isLoading }: Props) {
+
+    if (isLoading || !data) {
+        return (
+            <AdditionalInfoSkeleton />
+        )
+    }
+
     return (
         <Card title='Informations complémentaires' childrenClassName='flex flex-col gap-8'>
             {rows.map(({ label, value, Icon }) => (
@@ -41,7 +50,7 @@ function FormatComponent({ value, number }: { value: string, number: number }) {
         })
     }
 
-    if (value === "wind_deg") return <UpArrow className='size-8 invert' style={{transform: `rotate(${number}deg)`}} />
+    if (value === "wind_deg") return <UpArrow className='size-8 invert' style={{ transform: `rotate(${number}deg)` }} />
 
     return number
 }

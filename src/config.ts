@@ -1,2 +1,2 @@
-// Utilisation des Mocks ou API openweather
+// Utilisation des Mocks (true) ou API openweather (false)
 export const USE_MOCK = true

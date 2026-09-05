@@ -1,12 +1,21 @@
 import { type Weather } from "../../schemas/weatherSchemas"
+import HourlySkeleton from "../skeletons/HourlySkeleton"
 import WeatherIcon from "../WeatherIcon"
 import Card from "./Card"
 
 type Props = {
-  data: Weather
+  data: Weather | undefined
+  isLoading: boolean
 }
 
-export default function HourlyForecast({ data }: Props) {
+export default function HourlyForecast({ data, isLoading }: Props) {
+
+  if (isLoading || !data) {
+    return (
+      <HourlySkeleton />
+    )
+  }
+
   return (
     <Card title="Prévisions horaires (48h)" childrenClassName="flex gap-6 overflow-x-scroll">
       {data.hourly.map((hour) => (

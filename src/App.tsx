@@ -14,6 +14,7 @@ import { USE_MOCK } from "./config"
 import MapTypeDropdown from "./components/dropdowns/MapTypeDropdown"
 import MapLegend from "./components/MapLegend"
 
+
 // "city" pour le geocodage - "custom" pour le click sur la map
 type LocationMode = "city" | "custom"
 
@@ -46,7 +47,7 @@ function App() {
       : null
 
   // METEO
-  const { data: apiWeatherData } = useQuery({
+  const { data: apiWeatherData, isLoading: isWeatherLoading } = useQuery({
     queryKey: ['weather', weatherCoords?.lat, weatherCoords?.lon],
     queryFn: () => getWeather(weatherCoords!),
     enabled: !USE_MOCK && weatherCoords !== null
@@ -64,13 +65,6 @@ function App() {
     setCoords(newCoords)
     setLocationMode("custom")
   }
-
-
-  if (!weatherData) {
-    return <p>Chargement...</p>
-  }
-
-  // console.log(coords);
 
 
   return (
@@ -103,13 +97,25 @@ function App() {
           <MapLegend mapType={mapType} />
         </div>
 
-        <CurrentWeather data={weatherData} />
+        <CurrentWeather
+          data={weatherData}
+          isLoading={isWeatherLoading}
+        />
 
-        <HourlyForecast data={weatherData} />
+        <HourlyForecast
+          data={weatherData}
+          isLoading={isWeatherLoading}
+        />
 
-        <DailyForecast data={weatherData} />
+        <DailyForecast 
+          data={weatherData} 
+          isLoading={isWeatherLoading}
+        />        
 
-        <AdditionalInfo data={weatherData} />
+        <AdditionalInfo 
+          data={weatherData} 
+          isLoading={isWeatherLoading}
+        />
       </div>
     </>
   )

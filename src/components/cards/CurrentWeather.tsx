@@ -1,12 +1,20 @@
 import Card from './Card'
 import { type Weather } from '../../schemas/weatherSchemas'
 import WeatherIcon from '../WeatherIcon'
+import CurrentSkeleton from '../skeletons/CurrentSkeleton'
 
 type Props = {
-    data: Weather
+    data: Weather | undefined
+    isLoading: boolean
 }
 
-export default function CurrentWeather({ data }: Props) {    
+export default function CurrentWeather({ data, isLoading }: Props) {
+
+    if (isLoading || !data) {
+        return (
+            <CurrentSkeleton />
+        )
+    }
 
     return (
         <Card
