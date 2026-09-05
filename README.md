@@ -7,3 +7,4 @@
 ## clsx : mini-bibliothèque JavaScript (disponible sur NPM) servant à fusionner et conditionner des classes CSS de manière simple et propre
 ## Map interactive : Librairie Leaflet et Package react-leaflet
 ## Shadcn : composant Select
+## Map Custom : MapTiler

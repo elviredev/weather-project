@@ -2,6 +2,19 @@ import type { Geocode } from "../schemas/geocodeSchema"
 
 export const geocodeMock: Geocode = [
     {
+        name: "Chapelon",
+        local_names: {
+            en: "Chapelon",
+            fr: "Chapelon",
+            ascii: "Chapelon",
+            feature_name: "Chapelon",
+        },
+        lat: 48.0365,
+        lon: 2.5779,
+        country: "FR",
+        state: "Centre-Val-De-Loire",
+    },
+    {
         name: "Bangkok",
         local_names: {
             en: "Bangkok",

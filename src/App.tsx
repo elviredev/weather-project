@@ -12,14 +12,15 @@ import LocationDropdown from "./components/dropdowns/LocationDropdown"
 import { geocodeMock } from "./mocks/geocodeMock"
 import { USE_MOCK } from "./config"
 import MapTypeDropdown from "./components/dropdowns/MapTypeDropdown"
+import MapLegend from "./components/MapLegend"
 
 // "city" pour le geocodage - "custom" pour le click sur la map
 type LocationMode = "city" | "custom"
 
 
 function App() {
-  const [coords, setCoords] = useState<Coords>({ lat: 48.8566, lon: 2.3522 })
-  const [location, setLocation] = useState('Tokyo')
+  const [coords, setCoords] = useState<Coords>({ lat: 48.0365, lon: 2.5779 })
+  const [location, setLocation] = useState('Chapelon')
   const [mapType, setMapType] = useState('clouds_new')
   const [locationMode, setLocationMode] = useState<LocationMode>("city")
 
@@ -99,6 +100,7 @@ function App() {
             onLocationChange={handleMapLocationChange}
             mapType={mapType}
           />
+          <MapLegend mapType={mapType} />
         </div>
 
         <CurrentWeather data={weatherData} />

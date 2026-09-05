@@ -40,6 +40,7 @@ export default function LocationDropdown({ location, locationMode, onLocationCha
 }
 
 const locations = [
+    "Chapelon",
     "Bangkok",
     "Tokyo",
     "Seoul",
