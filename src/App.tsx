@@ -11,6 +11,7 @@ import type { Coords } from "./types"
 import LocationDropdown from "./components/dropdowns/LocationDropdown"
 import { geocodeMock } from "./mocks/geocodeMock"
 import { USE_MOCK } from "./config"
+import MapTypeDropdown from "./components/dropdowns/MapTypeDropdown"
 
 // "city" pour le geocodage - "custom" pour le click sur la map
 type LocationMode = "city" | "custom"
@@ -19,6 +20,7 @@ type LocationMode = "city" | "custom"
 function App() {
   const [coords, setCoords] = useState<Coords>({ lat: 48.8566, lon: 2.3522 })
   const [location, setLocation] = useState('Tokyo')
+  const [mapType, setMapType] = useState('clouds_new')
   const [locationMode, setLocationMode] = useState<LocationMode>("city")
 
   // GEOCODAGE
@@ -28,26 +30,26 @@ function App() {
     enabled: !USE_MOCK
   })
 
-  const geocodeData = USE_MOCK 
+  const geocodeData = USE_MOCK
     ? geocodeMock.filter(city => city.name === location)
     : apiGeocodeData
 
   // COORDONNEES UTILISEES
   const weatherCoords = locationMode === "custom"
-        ? coords
-        : geocodeData?.[0]
-          ? {
-            lat: geocodeData[0].lat,
-            lon: geocodeData[0].lon
-          }
-          : null
+    ? coords
+    : geocodeData?.[0]
+      ? {
+        lat: geocodeData[0].lat,
+        lon: geocodeData[0].lon
+      }
+      : null
 
   // METEO
   const { data: apiWeatherData } = useQuery({
     queryKey: ['weather', weatherCoords?.lat, weatherCoords?.lon],
     queryFn: () => getWeather(weatherCoords!),
     enabled: !USE_MOCK && weatherCoords !== null
-  })  
+  })
 
   const weatherData = USE_MOCK ? weatherMock : apiWeatherData
 
@@ -61,7 +63,7 @@ function App() {
     setCoords(newCoords)
     setLocationMode("custom")
   }
-  
+
 
   if (!weatherData) {
     return <p>Chargement...</p>
@@ -73,17 +75,29 @@ function App() {
   return (
     <>
       <div className="flex flex-col gap-8">
-        <div className="relative z-10">
-          <LocationDropdown
-            location={location}
-            onLocationChange={handleCityChange}
-          />
+
+        <div className="flex gap-8">
+          <div className="flex gap-4">
+            <h1 className="text-2xl font-semibold">Ville: </h1>
+            <LocationDropdown
+              location={location}
+              locationMode={locationMode}
+              onLocationChange={handleCityChange}
+            />
+          </div>
+
+          <div className="flex gap-4">
+            <h1 className="text-2xl font-semibold">Type Map: </h1>
+            <MapTypeDropdown mapType={mapType} setMapType={setMapType} />
+          </div>
         </div>
 
+
         <div className="relative z-0">
-          <Map 
-          coords={weatherCoords ?? coords} 
-          onLocationChange={handleMapLocationChange} 
+          <Map
+            coords={weatherCoords ?? coords}
+            onLocationChange={handleMapLocationChange}
+            mapType={mapType}
           />
         </div>
 

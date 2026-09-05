@@ -2,39 +2,48 @@ import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from "react-lea
 import 'leaflet/dist/leaflet.css'
 import type { Coords } from "../types"
 
+const API_KEY = import.meta.env.VITE_API_KEY
 
 type Props = {
     coords: Coords
     onLocationChange: (coords: Coords) => void
+    mapType: string
 }
 
-export default function Map({ coords, onLocationChange }: Props) {
+export default function Map({ coords, onLocationChange, mapType }: Props) {
     return (
         <MapContainer
             center={[coords.lat, coords.lon]}
             zoom={5}
-            style={{ width: '700px', height: '500px' }}
+            style={{ width: '1000px', height: '500px' }}
         >
-            <MapClick onLocationChange={onLocationChange} coords={coords} />
+            <MapPosition coords={coords} />
+            <MapClick onLocationChange={onLocationChange} />
             <TileLayer
                 attribution='Données © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> / ODbL - rendu <a href="https://openstreetmap.fr/">OSM France</a>'
                 url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
                 maxZoom={20}
+            />
+            <TileLayer
+                url={`https://tile.openweathermap.org/map/${mapType}/{z}/{x}/{y}.png?appid=${API_KEY}`}
             />
             <Marker position={[coords.lat, coords.lon]} />
         </MapContainer>
     )
 }
 
-function MapClick({ 
-    onLocationChange, 
-    coords 
-}: { 
-    onLocationChange: (coords: Coords) => void 
-    coords: Coords
-}) {
+function MapPosition({ coords }: { coords: Coords }) {
     const map = useMap()
     map.panTo([coords.lat, coords.lon])
+
+    return null
+}
+
+function MapClick({
+    onLocationChange
+}: {
+    onLocationChange: (coords: Coords) => void
+}) {
 
     useMapEvents({
         click(e) {

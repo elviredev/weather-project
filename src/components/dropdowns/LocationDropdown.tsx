@@ -3,31 +3,36 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 
 type Props = {
     location: string
+    locationMode: "city" | "custom"
     onLocationChange: (location: string) => void
 }
 
-export default function LocationDropdown({ location, onLocationChange }: Props) {
-    
+export default function LocationDropdown({ location, locationMode, onLocationChange }: Props) {
+
     return (
         <Select
             value={location}
             onValueChange={(value) => {
-                if(value) {
+                if (value) {
                     onLocationChange(value)
                 }
             }}
         >
 
             <SelectTrigger className="w-45">
-                <SelectValue placeholder="Theme" />
+                {locationMode === "custom" ? (
+                    <span>Personnalisé</span>
+                ) : (
+                    <SelectValue placeholder="Choisir une ville" />
+                )}
             </SelectTrigger>
 
-            <SelectContent className="z-50">
-              {locations.map(city => (
-                <SelectItem key={city} value={city}>
-                    {city}
-                </SelectItem>
-              ))}
+            <SelectContent className="z-50">                
+                {locations.map(city => (
+                    <SelectItem key={city} value={city}>
+                        {city}
+                    </SelectItem>
+                ))}
             </SelectContent>
 
         </Select>
