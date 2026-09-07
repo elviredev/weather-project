@@ -6,7 +6,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  font-family: system-ui, Avenir, Arial, Helvetica, sans-serif,sans-serif;
+  font-family: system-ui, Avenir, Arial, Helvetica, sans-serif, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -133,9 +133,11 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-sans;
   }
@@ -145,7 +147,17 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
+  }
+}
+
+/* Cacher la scrollbar tout en conservant le scroll */
+@utility scrollbar-hidden {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }

@@ -1,3 +1,4 @@
+import airPollutionSchema from "./schemas/airPollutionSchema"
 import geocodeSchema from "./schemas/geocodeSchema"
 import weatherSchema from "./schemas/weatherSchemas"
 
@@ -27,6 +28,23 @@ export async function getGeocode(location: string) {
     const data = await res.json()
     
     const result = geocodeSchema.safeParse(data)
+
+    if (!result.success) {
+        console.error("❌ ERREUR ZOD :", result.error)
+        console.log("📦 DONNÉES API :", data)
+
+        throw result.error
+    }
+
+    return result.data
+}
+
+export async function getAirPollution({ lat, lon }: { lat: number, lon: number }) {
+    const res = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`)
+
+    const data = await res.json()
+    
+    const result = airPollutionSchema.safeParse(data)
 
     if (!result.success) {
         console.error("❌ ERREUR ZOD :", result.error)

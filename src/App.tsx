@@ -6,13 +6,15 @@ import HourlyForecast from "./components/cards/HourlyForecast"
 import CurrentWeather from "./components/cards/CurrentWeather"
 import AdditionalInfo from "./components/cards/AdditionalInfo"
 import Map from "./components/Map"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { Coords } from "./types"
 import LocationDropdown from "./components/dropdowns/LocationDropdown"
 import { geocodeMock } from "./mocks/geocodeMock"
 import { USE_MOCK } from "./config"
 import MapTypeDropdown from "./components/dropdowns/MapTypeDropdown"
 import MapLegend from "./components/MapLegend"
+import SidePanel from "./components/SidePanel"
+import Hamburger from './assets/hamburger.svg?react'
 
 
 // "city" pour le geocodage - "custom" pour le click sur la map
@@ -24,6 +26,7 @@ function App() {
   const [location, setLocation] = useState('Chapelon')
   const [mapType, setMapType] = useState('clouds_new')
   const [locationMode, setLocationMode] = useState<LocationMode>("city")
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState(true)
 
   // GEOCODAGE
   const { data: apiGeocodeData } = useQuery({
@@ -33,24 +36,14 @@ function App() {
   })
 
   const geocodeData = USE_MOCK
-    ? geocodeMock.filter(city => city.name === location)
-    : apiGeocodeData
-
-  // COORDONNEES UTILISEES
-  const weatherCoords = locationMode === "custom"
-    ? coords
-    : geocodeData?.[0]
-      ? {
-        lat: geocodeData[0].lat,
-        lon: geocodeData[0].lon
-      }
-      : null
+    ? geocodeMock.find(city => city.name === location)
+    : apiGeocodeData?.[0]
 
   // METEO
   const { data: apiWeatherData, isLoading: isWeatherLoading } = useQuery({
-    queryKey: ['weather', weatherCoords?.lat, weatherCoords?.lon],
-    queryFn: () => getWeather(weatherCoords!),
-    enabled: !USE_MOCK && weatherCoords !== null
+    queryKey: ['weather', coords.lat, coords.lon],
+    queryFn: () => getWeather(coords),
+    enabled: !USE_MOCK
   })
 
   const weatherData = USE_MOCK ? weatherMock : apiWeatherData
@@ -66,11 +59,22 @@ function App() {
     setLocationMode("custom")
   }
 
+  useEffect(() => {
+    if (locationMode !== "city") return
+    if (!geocodeData) return
+
+    setCoords({
+      lat: geocodeData.lat,
+      lon: geocodeData.lon
+    })
+
+  }, [geocodeData, locationMode])
+
 
   return (
     <>
-      <div className="flex flex-col gap-8">
 
+      <div className="flex flex-col gap-8">
         <div className="flex gap-8">
           <div className="flex gap-4">
             <h1 className="text-2xl font-semibold">Ville: </h1>
@@ -85,38 +89,43 @@ function App() {
             <h1 className="text-2xl font-semibold">Type Map: </h1>
             <MapTypeDropdown mapType={mapType} setMapType={setMapType} />
           </div>
+
+          <button onClick={() => setIsSidePanelOpen(true)}>
+            <Hamburger className="size-8 invert ml-auto" />
+          </button>
         </div>
-
-
         <div className="relative z-0">
           <Map
-            coords={weatherCoords ?? coords}
+            coords={coords}
             onLocationChange={handleMapLocationChange}
             mapType={mapType}
           />
           <MapLegend mapType={mapType} />
         </div>
-
         <CurrentWeather
           data={weatherData}
           isLoading={isWeatherLoading}
         />
-
         <HourlyForecast
           data={weatherData}
           isLoading={isWeatherLoading}
         />
-
-        <DailyForecast 
-          data={weatherData} 
+        <DailyForecast
+          data={weatherData}
           isLoading={isWeatherLoading}
-        />        
-
-        <AdditionalInfo 
-          data={weatherData} 
+        />
+        <AdditionalInfo
+          data={weatherData}
           isLoading={isWeatherLoading}
         />
       </div>
+
+      <SidePanel
+        coords={coords}
+        isSidePanelOpen={isSidePanelOpen}
+        setIsSidePanelOpen={setIsSidePanelOpen}
+      />
+
     </>
   )
 }
