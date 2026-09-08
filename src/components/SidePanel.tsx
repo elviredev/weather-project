@@ -39,12 +39,12 @@ export default function SidePanel({ coords, isSidePanelOpen, setIsSidePanelOpen 
     return (
         <div
             className={clsx(
-                "fixed top-0 right-0 h-screen w-90 shadow-md bg-sidebar py-8 px-4 overflow-y-auto scrollbar-hidden transition-transform duration-300", 
+                "fixed top-0 right-0 h-screen w-(--sidebar-width) shadow-md bg-sidebar py-8 px-4 overflow-y-scroll scrollbar-hidden transition-transform duration-300 lg:translate-x-0! z-10", 
                 isSidePanelOpen ? 'translate-x-0' : 'translate-x-full'
             )}
         >
             <button onClick={() => setIsSidePanelOpen(false)}>
-                <Chevron className="size-8 invert -ml-2" />
+                <Chevron className="size-8 invert -ml-2 lg:hidden" />
             </button>
             
             <AirPollution

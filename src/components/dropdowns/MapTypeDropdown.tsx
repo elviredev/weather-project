@@ -20,7 +20,7 @@ export default function MapTypeDropdown({ mapType, setMapType }: Props) {
             }}
         >
 
-            <SelectTrigger className="w-45">
+            <SelectTrigger className="w-full xs:w-45">
                 <SelectValue placeholder="Type de carte">
                     {selectedType?.label}
                 </SelectValue>

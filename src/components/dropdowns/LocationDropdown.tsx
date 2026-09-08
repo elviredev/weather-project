@@ -19,7 +19,7 @@ export default function LocationDropdown({ location, locationMode, onLocationCha
             }}
         >
 
-            <SelectTrigger className="w-45">
+            <SelectTrigger className="w-full xs:w-45">
                 {locationMode === "custom" ? (
                     <span>Personnalisé</span>
                 ) : (

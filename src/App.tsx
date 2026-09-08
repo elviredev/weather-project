@@ -15,6 +15,7 @@ import MapTypeDropdown from "./components/dropdowns/MapTypeDropdown"
 import MapLegend from "./components/MapLegend"
 import SidePanel from "./components/SidePanel"
 import Hamburger from './assets/hamburger.svg?react'
+import MobileHeader from "./components/MobileHeader"
 
 
 // "city" pour le geocodage - "custom" pour le click sur la map
@@ -26,7 +27,7 @@ function App() {
   const [location, setLocation] = useState('Chapelon')
   const [mapType, setMapType] = useState('clouds_new')
   const [locationMode, setLocationMode] = useState<LocationMode>("city")
-  const [isSidePanelOpen, setIsSidePanelOpen] = useState(true)
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState(false)
 
   // GEOCODAGE
   const { data: apiGeocodeData } = useQuery({
@@ -73,10 +74,12 @@ function App() {
 
   return (
     <>
-
-      <div className="flex flex-col gap-8">
-        <div className="flex gap-8">
-          <div className="flex gap-4">
+    <MobileHeader setIsSidePanelOpen={setIsSidePanelOpen} />
+      <div
+        className="flex flex-col gap-8 pt-4 p-8 xs:pt-8 w-full lg:w-[calc(100dvw-var(--sidebar-width))] 2xl:h-screen 2xl:min-h-280"
+      >
+        <div className="flex flex-col gap-4 xs:flex-row xs:gap-8">
+          <div className="flex flex-col md:flex-row gap-2 md:gap-4">
             <h1 className="text-2xl font-semibold">Ville: </h1>
             <LocationDropdown
               location={location}
@@ -85,39 +88,57 @@ function App() {
             />
           </div>
 
-          <div className="flex gap-4">
-            <h1 className="text-2xl font-semibold">Type Map: </h1>
+          <div className="flex flex-col md:flex-row gap-2 md:gap-4">
+            <h1 className="text-2xl font-semibold whitespace-nowrap">Type Map: </h1>
             <MapTypeDropdown mapType={mapType} setMapType={setMapType} />
           </div>
 
-          <button onClick={() => setIsSidePanelOpen(true)}>
-            <Hamburger className="size-8 invert ml-auto" />
+          <button onClick={() => setIsSidePanelOpen(true)} className="hidden xs:block">
+            <Hamburger className="size-8 invert ml-auto xs:hidden" />
           </button>
         </div>
-        <div className="relative z-0">
-          <Map
-            coords={coords}
-            onLocationChange={handleMapLocationChange}
-            mapType={mapType}
-          />
-          <MapLegend mapType={mapType} />
+
+        <div className="grid grid-cols-1 2xl:flex-1 2xl:min-h-0 md:grid-cols-2 2xl:grid-cols-4 2xl:grid-rows-4 gap-4" >
+
+          <div className="relative z-0 h-120 2xl:h-auto col-span-1 md:col-span-2 2xl:col-span-4 2xl:row-span-2 order-1">
+            <Map
+              coords={coords}
+              onLocationChange={handleMapLocationChange}
+              mapType={mapType}
+            />
+            <MapLegend mapType={mapType} />
+          </div>
+
+          <div className="col-span-1 2xl:row-span-2 order-2">
+            <CurrentWeather
+              data={weatherData}
+              isLoading={isWeatherLoading}
+            />
+          </div>
+
+          <div className="col-span-1 order-3 2xl:order-4 2xl:row-span-2">
+            <DailyForecast
+              data={weatherData}
+              isLoading={isWeatherLoading}
+            />
+          </div>
+
+          <div className="col-span-1 md:col-span-2 2xl:row-span-1 order-4 2xl:order-3">
+            <HourlyForecast
+              data={weatherData}
+              isLoading={isWeatherLoading}
+            />
+          </div>
+
+          <div className="col-span-1 md:col-span-2 2xl:row-span-1 order-5">
+            <AdditionalInfo
+              data={weatherData}
+              isLoading={isWeatherLoading}
+            />
+          </div>
+
         </div>
-        <CurrentWeather
-          data={weatherData}
-          isLoading={isWeatherLoading}
-        />
-        <HourlyForecast
-          data={weatherData}
-          isLoading={isWeatherLoading}
-        />
-        <DailyForecast
-          data={weatherData}
-          isLoading={isWeatherLoading}
-        />
-        <AdditionalInfo
-          data={weatherData}
-          isLoading={isWeatherLoading}
-        />
+
       </div>
 
       <SidePanel

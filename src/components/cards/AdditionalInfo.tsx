@@ -23,7 +23,10 @@ export default function AdditionalInfo({ data, isLoading }: Props) {
     }
 
     return (
-        <Card title='Informations complémentaires' childrenClassName='flex flex-col gap-8'>
+        <Card
+            title='Informations complémentaires'
+            childrenClassName='grid grid-cols-1 md:grid-cols-2 gap-8'
+        >
             {rows.map(({ label, value, Icon }) => (
                 <div key={value} className='flex justify-between'>
                     <div className='flex gap-4'>
