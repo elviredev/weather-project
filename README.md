@@ -8,3 +8,5 @@
 ## Map interactive : Librairie Leaflet et Package react-leaflet
 ## Shadcn : composant Select
 ## Map Custom : MapTiler
+## Dark/Light Mode avec tailwind et shadcn
+## Données mockées

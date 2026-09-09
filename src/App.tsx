@@ -16,6 +16,7 @@ import MapLegend from "./components/MapLegend"
 import SidePanel from "./components/SidePanel"
 import Hamburger from './assets/hamburger.svg?react'
 import MobileHeader from "./components/MobileHeader"
+import LightDarkToggle from "./components/LightDarkToggle"
 
 
 // "city" pour le geocodage - "custom" pour le click sur la map
@@ -74,7 +75,7 @@ function App() {
 
   return (
     <>
-    <MobileHeader setIsSidePanelOpen={setIsSidePanelOpen} />
+      <MobileHeader setIsSidePanelOpen={setIsSidePanelOpen} />
       <div
         className="flex flex-col gap-8 pt-4 p-8 xs:pt-8 w-full lg:w-[calc(100dvw-var(--sidebar-width))] 2xl:h-screen 2xl:min-h-280"
       >
@@ -93,9 +94,17 @@ function App() {
             <MapTypeDropdown mapType={mapType} setMapType={setMapType} />
           </div>
 
-          <button onClick={() => setIsSidePanelOpen(true)} className="hidden xs:block">
-            <Hamburger className="size-8 invert ml-auto xs:hidden" />
-          </button>
+          <div className="ml-auto flex gap-4 items-center">
+            <div className="hidden xs:block">
+              <LightDarkToggle />
+            </div>
+            <button
+              onClick={() => setIsSidePanelOpen(true)}
+              className="hidden xs:block"
+            >
+              <Hamburger className="size-6 lg:hidden" />
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 2xl:flex-1 2xl:min-h-0 md:grid-cols-2 2xl:grid-cols-4 2xl:grid-rows-4 gap-4" >
@@ -115,7 +124,7 @@ function App() {
               isLoading={isWeatherLoading}
             />
           </div>
-
+          
           <div className="col-span-1 order-3 2xl:order-4 2xl:row-span-2">
             <DailyForecast
               data={weatherData}
